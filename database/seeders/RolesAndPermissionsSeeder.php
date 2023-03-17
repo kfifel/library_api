@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Permissions\BookPermissions;
 use App\Permissions\CategoryPermissions;
+use App\Permissions\RolePermissions;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -34,7 +35,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // create roles and assign created permissions
 
         // this can be done as separate statements
-        $role = Role::create(['name' => 'receptionist']);
+        $role = Role::create(['name' => RolePermissions::RECEPTIONIST]);
         $role->givePermissionTo([
             BookPermissions::CREATE,
             BookPermissions::READ,
@@ -43,10 +44,10 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         // or may be done by chaining
-        $role = Role::create(['name' => 'user'])
-        ->givePermissionTo([BookPermissions::READ]);
+        $role = Role::create(['name' => RolePermissions::USER]);
+        $role->givePermissionTo([BookPermissions::READ]);
 
-        $role = Role::create(['name' => 'admin']);
+        $role = Role::create(['name' => RolePermissions::ADMIN]);
         $role->givePermissionTo(Permission::all());
     }
 }
