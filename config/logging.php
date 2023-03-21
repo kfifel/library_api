@@ -58,6 +58,7 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
+            'rotate' => 2, //rotate the log file and create a new one once the current log file exceeds 2MB.
         ],
 
         'daily' => [
@@ -65,6 +66,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => 14,
+            'rotate' => 2,
         ],
 
         'slack' => [
