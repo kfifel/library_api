@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Log;
 class GenreController extends Controller
 {
 
+    public function __construct ()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function index()
     {
         try
@@ -20,7 +25,7 @@ class GenreController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Getting the genres',
-                'data' => Genre::all(),
+                'data' => $genres,
             ]);
         }catch (\Exception $e)
         {
@@ -35,6 +40,7 @@ class GenreController extends Controller
 
     public function store(StoreGenreRequest $request)
     {
+        Log::info('Request to creating genre ');
         try
         {
             $data = $request->validated();
@@ -57,7 +63,7 @@ class GenreController extends Controller
 
     public function show(Genre $genre)
     {
-        Log::info('getting genre by id = '.$genre->id);
+        Log::info('Request to getting genre by id = '.$genre->id);
         return response()->json([
             'status' => 'success',
             'message' => 'getting genre by id is successfully',
@@ -68,12 +74,48 @@ class GenreController extends Controller
 
     public function update(UpdateGenreRequest $request, Genre $genre)
     {
-        //
+        try
+        {
+            Log::info('Request to updating genre id = '.$genre->id);
+            $confidential = $request->validated();
+            $genre->update($confidential);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'updating genre is successful',
+                'genre' => $genre,
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            Log::error('Error in updating Genre. \n Error: '.$e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'error is occurred when updating, try again',
+            ]);
+        }
     }
 
 
     public function destroy(Genre $genre)
     {
-        //
+        try
+        {
+            Log::info('Request to deleting genre id = '.$genre->id);
+            $genre->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Deleting genre is successful',
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            Log::error('Error in updating Genre \n Error: '.$e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'error is occurred when deleting genre, try again',
+            ]);
+        }
     }
 }
