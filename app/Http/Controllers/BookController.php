@@ -5,82 +5,128 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
+use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct ()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function index()
     {
-        //
+        $this->authorize('view');
+
+        try
+        {
+            $books = Book::all();
+            Log::info('Fetching Books :'.json_encode($books));
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'fetching books is successful',
+                'data' => $books,
+            ]);
+        }catch (\Exception $e)
+        {
+            Log::error('Error in getting Books :'.$e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'error is occurred, try again',
+            ]);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreBookRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreBookRequest $request)
     {
-        //
+        $this->authorize('create', Book::class);
+
+        Log::info('Request to creating book ');
+        try
+        {
+            $confidential = $request->validated();
+            $book = Book::create($confidential);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'book created with successfully',
+                'book' => $book,
+            ]);
+        }catch (\Exception $e)
+        {
+            Log::error('Error in storing Books :'.$e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'error is occurred when creating the book, try again',
+            ]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
     public function show(Book $book)
     {
-        //
+        $this->authorize('view', $book);
+
+        Log::info('Request to getting book by id = '.$book->id);
+        $book->load(['genre', 'collection']);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'getting book by id is successfully',
+            'book' => $book,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Book $book)
+
+    public function update(StoreBookRequest $request, Book $book)
     {
-        //
+        $this->authorize('update', $book);
+
+        try
+        {
+            Log::info('Request to updating book id = '.$book->id);
+            $confidential = $request->validated();
+            $book->update($confidential);
+            $book->load(['genre', 'collection']);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'updating book is successful',
+                'book' => $book,
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            Log::error("Error in updating Book. \n Error: ".$e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'error is occurred when updating, try again',
+            ]);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateBookRequest  $request
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateBookRequest $request, Book $book)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Book $book)
+    public function destroy(int $book)
     {
-        //
+        $this->authorize('delete', $book);
+
+        try
+        {
+            Log::info('Request to deleting book id = '.$book->id);
+            $book = Book::find($book);
+            $book->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Deleting book is successful',
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            Log::error("Error in updating Book \n Error: ".$e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'error is occurred when deleting book, try again',
+            ]);
+        }
     }
 }

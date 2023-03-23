@@ -4,91 +4,38 @@ namespace App\Policies;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Permissions\BookPermissions;
+use App\Permissions\RolePermissions;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Gate;
 
 class BookPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function viewAny(User $user)
+    public function view(User $user)
     {
-        //
+        return $user->hasPermissionTo(BookPermissions::READ)
+            || $user->hasRole(RolePermissions::ADMIN);
     }
 
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function view(User $user, Book $book)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can create models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
     public function create(User $user)
     {
-        //
+        return $user->hasPermissionTo(BookPermissions::CREATE)
+            || $user->hasRole(RolePermissions::ADMIN);
     }
 
-    /**
-     * Determine whether the user can update the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
     public function update(User $user, Book $book)
     {
-        //
+        return $user->hasPermissionTo(BookPermissions::UPDATE_ALL)
+            || ( $user->hasPermissionTo(BookPermissions::UPDATE) && $book->user_id === $user->id )
+            || $user->hasRole(RolePermissions::ADMIN);
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
     public function delete(User $user, Book $book)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, Book $book)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, Book $book)
-    {
-        //
+        return $user->hasPermissionTo(BookPermissions::DELETE_ALL)
+            || ($user->hasPermissionTo(BookPermissions::DELETE) && $book->user_id === $user->id)
+            || $user->hasRole(RolePermissions::ADMIN);
     }
 }

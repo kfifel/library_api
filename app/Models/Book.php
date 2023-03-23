@@ -17,6 +17,9 @@ class Book extends Model
         'location',
         'status',
         'content',
+        'genre_id',
+        'collection_id',
+        'user_id',
     ];
 
     public function genre()
