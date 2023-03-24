@@ -2,14 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Book;
-use App\Models\Collection;
-use App\Models\Genre;
-use App\Policies\BookPolicy;
-use App\Policies\CollectionPolicy;
-use App\Policies\GenrePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,9 +14,9 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
 
-        Book::class => BookPolicy::class,
-        Genre::class => GenrePolicy::class,
-        Collection::class => CollectionPolicy::class,
+        \App\Models\Book::class => \App\Policies\BookPolicy::class,
+        \App\Models\Genre::class => \App\Policies\GenrePolicy::class,
+        \App\Models\Collection::class => \App\Policies\CollectionPolicy::class,
     ];
 
     /**

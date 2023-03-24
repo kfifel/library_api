@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Permissions\Role;
 use App\Permissions\RolePermissions;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,7 +22,9 @@ class UserSeeder extends Seeder
             'email' => 'admin@library.com',
             'password' => Hash::make('password'),
         ]);
-        $user->assignRole(RolePermissions::ADMIN);
+        $user->assignRole(Role::ADMIN);
+        $user->assignRole(Role::RECEPTIONIST);
+        $user->assignRole(Role::USER);
 
 
         $user = User::create([
@@ -30,7 +32,7 @@ class UserSeeder extends Seeder
             'email' => 'user@library.com',
             'password' => Hash::make('password'),
         ]);
-        $user->assignRole(RolePermissions::USER);
+        $user->assignRole(Role::USER);
 
 
         $user = User::create([
@@ -38,6 +40,7 @@ class UserSeeder extends Seeder
             'email' => 'receptionist@library.com',
             'password' => Hash::make('password'),
         ]);
-        $user->assignRole(RolePermissions::RECEPTIONIST);
+        $user->assignRole(Role::RECEPTIONIST);
+        $user->assignRole(Role::USER);
     }
 }
