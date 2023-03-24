@@ -13,10 +13,12 @@ class CollectionController extends Controller
     public function __construct ()
     {
         $this->middleware('auth:api');
+        //$this->authorizeResource(Collection::class, 'collection');
     }
 
     public function index()
     {
+        $this->authorize('view', Collection::class);
         try
         {
             $collections = Collection::all();
@@ -40,6 +42,8 @@ class CollectionController extends Controller
 
     public function store(StoreCollectionRequest $request)
     {
+        $this->authorize('create', Collection::class);
+
         Log::info('Request to creating collection ');
         try
         {
@@ -63,6 +67,8 @@ class CollectionController extends Controller
 
     public function show(Collection $collection)
     {
+        $this->authorize('view', Collection::class);
+
         Log::info('Request to getting collection by id = '.$collection->id);
         return response()->json([
             'status' => 'success',
@@ -74,6 +80,7 @@ class CollectionController extends Controller
 
     public function update(UpdateCollectionRequest $request, Collection $collection)
     {
+        $this->authorize('update', Collection::class);
         try
         {
             Log::info('Request to updating collection id = '.$collection->id);
@@ -99,6 +106,8 @@ class CollectionController extends Controller
 
     public function destroy(Collection $collection)
     {
+        $this->authorize('delete', Collection::class);
+
         try
         {
             Log::info('Request to deleting collection id = '.$collection->id);
