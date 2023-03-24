@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Permissions\GenrePermissions;
-use App\Permissions\RolePermissions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class GenrePolicy
@@ -13,25 +12,21 @@ class GenrePolicy
 
     public function view(User $user)
     {
-        return $user->hasPermissionTo(GenrePermissions::READ)
-            || $user->hasRole(RolePermissions::RECEPTIONIST);
+        return $user->hasPermissionTo(GenrePermissions::READ);
     }
 
     public function create(User $user)
     {
-        return $user->hasPermissionTo(GenrePermissions::CREATE)
-            || $user->hasRole(RolePermissions::RECEPTIONIST);
+        return $user->hasPermissionTo(GenrePermissions::CREATE);
     }
 
     public function update(User $user)
     {
-        return $user->hasPermissionTo(GenrePermissions::UPDATE)
-            || $user->hasRole(RolePermissions::RECEPTIONIST);
+        return $user->hasPermissionTo(GenrePermissions::UPDATE);
     }
 
     public function delete(User $user)
     {
-        return $user->hasPermissionTo(GenrePermissions::DELETE)
-            || $user->hasRole(RolePermissions::RECEPTIONIST);
+        return $user->hasPermissionTo(GenrePermissions::DELETE);
     }
 }

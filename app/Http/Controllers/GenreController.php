@@ -17,6 +17,7 @@ class GenreController extends Controller
 
     public function index()
     {
+        $this->authorize('view', Genre::class);
         try
         {
             $genres = Genre::all();
@@ -40,6 +41,8 @@ class GenreController extends Controller
 
     public function store(StoreGenreRequest $request)
     {
+        $this->authorize('create', Genre::class);
+
         Log::info('Request to creating genre ');
         try
         {
@@ -63,6 +66,8 @@ class GenreController extends Controller
 
     public function show(Genre $genre)
     {
+        $this->authorize('view', Genre::class);
+
         Log::info('Request to getting genre by id = '.$genre->id);
         return response()->json([
             'status' => 'success',
@@ -74,6 +79,7 @@ class GenreController extends Controller
 
     public function update(UpdateGenreRequest $request, Genre $genre)
     {
+        $this->authorize('update', Genre::class);
         try
         {
             Log::info('Request to updating genre id = '.$genre->id);
@@ -99,6 +105,7 @@ class GenreController extends Controller
 
     public function destroy(Genre $genre)
     {
+        $this->authorize('delete', Genre::class);
         try
         {
             Log::info('Request to deleting genre id = '.$genre->id);
