@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class BookController extends Controller
 {
@@ -16,8 +17,7 @@ class BookController extends Controller
 
     public function index()
     {
-        $this->authorize('view');
-
+        $this->authorize('view', Book::class);
         try
         {
             $books = Book::all();
@@ -46,8 +46,11 @@ class BookController extends Controller
         Log::info('Request to creating book ');
         try
         {
+            $user = JWTAuth::user();
             $confidential = $request->validated();
-            $book = Book::create($confidential);
+
+            $book = $user->books()->create($confidential);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'book created with successfully',
