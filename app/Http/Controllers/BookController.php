@@ -109,14 +109,13 @@ class BookController extends Controller
     }
 
 
-    public function destroy(int $book)
+    public function destroy(Book $book)
     {
         $this->authorize('delete', $book);
 
         try
         {
             Log::info('Request to deleting book id = '.$book->id);
-            $book = Book::find($book);
             $book->delete();
             return response()->json([
                 'status' => 'success',
