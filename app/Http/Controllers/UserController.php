@@ -26,14 +26,16 @@ class UserController extends Controller
     }
 
 
-    public function assignRole(Request $request, User $user): JsonResponse
+    public function assignRole(Request $request): JsonResponse
     {
+        $request->validate([
+            'role_id' => 'required|exists:roles,id',
+            'user_id' => 'required|exists:users,id',
+        ]);
         try {
-            $request->validate([
-                'role_id' => 'required|exists:roles,id'
-            ]);
 
             $role = Role::findOrFail($request->role_id);
+            $user = User::findOrFail($request->user_id);
 
             if ($user->hasRole($role)) {
                 return response()->json([
@@ -58,14 +60,15 @@ class UserController extends Controller
         }
     }
 
-    public function revokeRole(Request $request, User $user): JsonResponse
+    public function revokeRole(Request $request): JsonResponse
     {
+        $request->validate([
+            'role_id' => 'required|exists:roles,id'
+        ]);
         try {
-            $request->validate([
-                'role_id' => 'required|exists:roles,id'
-            ]);
 
             $role = Role::findOrFail($request->role_id);
+            $user = User::findOrFail($request->user_id);
 
             if (!$user->hasRole($role)) {
                 return response()->json([
